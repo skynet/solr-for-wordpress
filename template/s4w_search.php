@@ -9,16 +9,32 @@ Template Name: Search
 
 <div class="solr clearfix">
 	
-  <?php $results = s4w_search_results(); ?>  
+<?php 
+    $results = s4w_search_results(); 
+    if (!isset($results['results']) || $results['results'] === NULL) {
+        echo "<div class='solr_noresult'><h2>Sorry, search is unavailable right now</h2><p>Try again later?</p></div>";
+    } 
+    else {
+    ?>
 
 	<div class="solr1 clearfix">
 		<div class="solr_search">
 		    <?php if ($results['qtime']) {
                 printf("<label class='solr_response'>Response time: <span id=\"qrytime\">{$results['qtime']}</span> s</label>");
-            } ?>
+            } 
+            
+            //if server id has been defined keep hold of it
+            $server = $_GET['server'];
+            if($server) {
+              $serverval = '<input name="server" type="hidden" value="'.$server.'" />';
+            }
+            
+            ?>
 
             <form name="searchbox" method="get" id="searchbox" action="">
-			    <input id="qrybox" name="s" type="text" class="solr_field" value="<?= $results['query'] ?>"/><input id="searchbtn" type="submit" value="Search" />
+			        <input id="qrybox" name="s" type="text" class="solr_field" value="<?php echo $results['query'] ?>"/>
+			        <?php echo $serverval; ?>
+			        <input id="searchbtn" type="submit" value="Search" />
             </form>
 		</div>
 
@@ -56,7 +72,10 @@ Template Name: Search
 
 		<div class="solr_results">
 			
-			<?php if ($results['hits'] === "0") {
+<?php 
+                    
+           
+                    if ($results['hits'] === "0") {
 					printf("<div class='solr_noresult'>
 										<h2>Sorry, no results were found.</h2>
 										<h3>Perhaps you mispelled your search query, or need to try using broader search terms.</h3>
@@ -157,4 +176,7 @@ Template Name: Search
 </div>
 
 </div>
-<?php get_footer(); ?>
+<?php 
+                
+    } 
+                get_footer(); ?>
